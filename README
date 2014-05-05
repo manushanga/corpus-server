@@ -1,0 +1,17 @@
+Compiling & Running
+
+Tested only on Linux, there is no guarantee that this 
+source would work on any other operating system without
+changes to the source.
+
+mkdir build
+cd build
+cmake ..
+mv corpus ..
+spawn-fcgi -p $PORT corpus $FILES
+
+$PORT is the port that fcgi is sending requests on 
+$FILES is the list of files seperated by space that the
+corpus is composed of
+
+
