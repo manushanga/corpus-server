@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
 	vector< std::string > ls;
 
 	for (int i=1;i<argc;i++){
-		ls.push_back(argv[i]);
+		ls.push_back(std::string(argv[i]));
 		std::cout<<argv[i]<<std::endl;
 	}
 	if (argc<2){
