@@ -14,4 +14,34 @@ $PORT is the port that fcgi is sending requests on
 $FILES is the list of files seperated by space that the
 corpus is composed of
 
+requests should be posted as POST requests in <domain>/X format 
+addresses, X here can be a single letter that differentiates
+multiple corpus-server instances running in the same machine
 
+use the following form to post data from an HTML page
+
+    <form name="input" action="q" accept-charset="utf-8" enctype="text/plain" method="post">
+      Search Query <input type="text" name="q"> </br></br>
+      Left context 
+      <select name="lc">
+		<option>5</option>
+		<option>4</option>
+		<option>3</option>
+		<option>2</option>
+		<option>1</option>
+		<option>0</option>
+      </select>  
+      Right context 
+      <select name="lr">
+		<option>5</option>
+		<option>4</option>
+		<option>3</option>
+		<option>2</option>
+		<option>1</option>
+		<option>0</option>
+      </select> </br></br>
+      <input type="submit" value="Submit">
+    </form> 
+
+q is the letter given to this instance of corpus-server it 
+can be any letter
