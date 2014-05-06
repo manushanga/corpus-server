@@ -7,6 +7,7 @@ changes to the source.
 mkdir build
 cd build
 cmake ..
+make
 mv corpus ..
 spawn-fcgi -p $PORT corpus $FILES
 

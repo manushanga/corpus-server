@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 2.8)
 
-set(cmake_cxx_flags -Wall -O4 -msse4.2 )
+set(cmake_cxx_flags -g -Wall -O3 -msse4.2 )
 project(corpus)
 set(corpus_cxx_sources filewriter.cpp filereader.cpp cache.cpp searcher.cpp utf8.c) 
-set(server 1)
+set(server 0)
 if (${server})
 set(corpus_cxx_sources ${corpus_cxx_sources} server.cpp)
 link_libraries(rt fcgi++ fcgi)

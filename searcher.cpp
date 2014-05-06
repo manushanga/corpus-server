@@ -361,6 +361,7 @@ Searcher::Status Searcher::doSearch(std::wstring searchstring,
 	if (search.size() > 8){
 		return Searcher::TOO_MANY_WORDS;
 	}
+	std::cout<<"size:"<<search.size()<<std::endl;
 	//LOG(std::wstring(L"SEARCH: ")+std::to_wstring<int>((int) search.size()) );
 	collect(search,sbits,results);
 	return Searcher::OK;
@@ -393,7 +394,7 @@ void Searcher::getConcordList(std::vector< unsigned >& result,
 		}
 		row.center = rdb[  cache->getRaw()[*it] ]->first;
 		if (rangeR >0) {
-			x=*it+1;
+			x=*it;
 			for (x++;x<=endPos;x++){
 				row.right += rdb[ cache->getRaw()[x] ]->first + L" ";
 			}
