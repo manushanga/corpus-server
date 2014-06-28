@@ -26,7 +26,7 @@
 class RegExp
 {
 public:
-	static int validate_post(const char *text, std::string& query, int& lc, int& lr){
+	static int validate_post(const char *text, std::string& query, int& lc, int& lr, char instance){
 		register int i=0,ok=1, state=0;
 		int len=std::strlen(text)-3;
 		std::string q;
@@ -36,7 +36,7 @@ public:
 			switch (state)
 			{
 				case 0:
-					if (text[i+1]=='=' ) {
+					if (text[i] == instance && text[i+1]=='=' ) {
 						state=1;
 						i+=2;
 					} else {

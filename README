@@ -9,8 +9,9 @@ cd build
 cmake ..
 make
 mv corpus ..
-spawn-fcgi -p $PORT corpus $FILES
+spawn-fcgi -p $PORT corpus $INSTANCE $FILES
 
+$INSTANCE is a character, replace q with this character to run multiple instances
 $PORT is the port that fcgi is sending requests on 
 $FILES is the list of files seperated by space that the
 corpus is composed of

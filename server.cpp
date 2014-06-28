@@ -27,7 +27,7 @@
 using namespace std;
 
 // Maximum bytes
-const unsigned long STDIN_MAX = 512;
+const unsigned long STDIN_MAX = 1000000;
 // trim from start
 static inline std::string &ltrim(std::string &s) {
         s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
@@ -54,7 +54,6 @@ string get_request_content(const FCGX_Request & request) {
             cerr << "Can't Parse 'CONTENT_LENGTH='"
                  << FCGX_GetParam("CONTENT_LENGTH", request.envp)
                  << "'. Consuming stdin up to " << STDIN_MAX << endl;
-		content_length=0;
         }
 
         if (content_length > STDIN_MAX) {
@@ -65,42 +64,37 @@ string get_request_content(const FCGX_Request & request) {
         content_length = 0;
     }
 
-    if (content_length == 0 || content_length == STDIN_MAX) {
-        return string("");
-    } else {
-        char content_buffer[content_length];
-        content_buffer[0]='\0';
-        cin.read(content_buffer, content_length);
-        content_length = cin.gcount();
+    char content_buffer[content_length];
+    cin.read(content_buffer, content_length);
+    content_length = cin.gcount();
 
-        // Chew up any remaining stdin - this shouldn't be necessary
-        // but is because mod_fastcgi doesn't handle it correctly.
+    // Chew up any remaining stdin - this shouldn't be necessary
+    // but is because mod_fastcgi doesn't handle it correctly.
 
-        // ignore() doesn't set the eof bit in some versions of glibc++
-        // so use gcount() instead of eof()...
-        do cin.ignore(1024); while (cin.gcount() == 1024);
+    // ignore() doesn't set the eof bit in some versions of glibc++
+    // so use gcount() instead of eof()...
+    do cin.ignore(1024); while (cin.gcount() == 1024);
 
-        string content(content_buffer, content_length);
+    string content(content_buffer, content_length);
 
-        return content;
-    }
+    return content;
 }
 
 int main(int argc, char *argv[]) {
-	vector< std::string > ls;
+    char instance='\0';
+    vector< std::string > ls;
 
-	for (int i=1;i<argc;i++){
-		ls.push_back(std::string(argv[i]));
-		std::cout<<argv[i]<<std::endl;
-	}
-	if (argc<2){
-		exit(-1);
-	}
-//    ls.push_back("CR.txt.sin");
-// 	ls.push_back("NP.txt.sin");
-// 	ls.push_back("TE.txt.sin");
-//	ls.push_back("kk");
-	
+    if (argc<2){   
+        cout<<"Invalid arguments! try corpus <character> <data_file1> [data_file2] ... [data_fileN]"<<endl;
+        exit(0);
+    }
+    instance = argv[1][0];
+    for (int i=2;i<argc;i++){
+        ls.push_back(std::string(argv[i]));
+    }
+    cout<<"Note: corpus-server only accepts UTF-16 data files, please convert"<<endl
+        <<"      if they are not in the correct format. No warnings will be given."<<endl;
+    cout<<"Note: If you changed your data, please delete db.cache manually."<<endl;
 	cout<<"loading cache..."<<endl;
     Timer t1;
     Cache cache(ls,false);
@@ -136,7 +130,6 @@ int main(int argc, char *argv[]) {
         cerr.rdbuf(&cerr_fcgi_streambuf);
 
         const char * uri = FCGX_GetParam("REQUEST_URI", request.envp);
-		LOG(uri);
 		string content = get_request_content(request);
 		// strip from end, FF doesn't append \n but chrome does
 		//content = trim(content);
@@ -165,7 +158,7 @@ int main(int argc, char *argv[]) {
 					<< "    <button onclick=\"back()\">Home</button>\n"
 					<< "    <button onclick=\"save()\">Download</button>\n";
 
-			int ret=RegExp::validate_post(content.c_str(),query,lc,lr);	
+			int ret=RegExp::validate_post(content.c_str(),query,lc,lr,instance);	
 			query = trim(query);
 			if (ret && lr>=0 && lc>=0 && lr<6 && lc<6 && query.size() >0 ) {
 				wchar_t wbuffer[128];

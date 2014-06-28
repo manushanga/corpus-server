@@ -274,7 +274,7 @@ Searcher::Status Searcher::doSearch(std::wstring searchstring,
 	wchar_t cstr[256];
 	std::vector < std::vector<bits> > sbits;
 	size_t start_pos,from;
-	
+
 	while (ss.good()){
     ss>>str;
 		start_pos=0;
@@ -305,6 +305,7 @@ Searcher::Status Searcher::doSearch(std::wstring searchstring,
 		cstr[cstr_wr++]=L'\0';
 		std::wstring wstr(cstr);
 		if (RegExp::check((wchar_t*)wstr.c_str())) {
+            LOG(wstr);
 			search.push_back(wstr);
 		} else {
 			return Searcher::WRONG_REGEXP;
@@ -361,7 +362,6 @@ Searcher::Status Searcher::doSearch(std::wstring searchstring,
 	if (search.size() > 8){
 		return Searcher::TOO_MANY_WORDS;
 	}
-	std::cout<<"size:"<<search.size()<<std::endl;
 	//LOG(std::wstring(L"SEARCH: ")+std::to_wstring<int>((int) search.size()) );
 	collect(search,sbits,results);
 	return Searcher::OK;
@@ -394,8 +394,8 @@ void Searcher::getConcordList(std::vector< unsigned >& result,
 		}
 		row.center = rdb[  cache->getRaw()[*it] ]->first;
 		if (rangeR >0) {
-			x=*it;
-			for (x++;x<=endPos;x++){
+			x=*it+1;
+			for (;x<=endPos;x++){
 				row.right += rdb[ cache->getRaw()[x] ]->first + L" ";
 			}
 			

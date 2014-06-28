@@ -24,52 +24,36 @@ using namespace std;
 int main ( int argc, const char **argv )
 {
 	std::vector< std::string > ls;
-	for (int i=1;i<argc;i++){
-		ls.push_back(std::string(argv[i]));
-	}
-	Timer t1;
-	Cache cache(ls,false);
+    ls.push_back("kk");
+    Timer t1;
+    Cache cache(ls,false);
 	t1.stop();
 	std::cout<<"db ok"<<cache.getDb().size()<<std::endl;
 	
-
+ 
 	Searcher ss(&cache);
 	
-	
-	wchar_t *arr[5]={L"their nativity",L"a*b*",L"?*",L"?",L"*"};
-	int h=4;
+    
+    wchar_t *arr[5]={L"a*bb",L"a*b*",L"?*",L"?",L"*"};
+    int h=0;
 
-	while ( h >=0 ){
+   // while ( h >=0 ){
 		std::vector< unsigned > rlist;
 		ConcordResults clist;	
 		Timer t2;
-		std::cout<<arr[h]<<std::endl;
-		Searcher::Status st= ss.doSearch(std::wstring(arr[h]),rlist);
-		if (st == Searcher::OK){
-			ss.getConcordList(rlist,clist,5,5);
-			std::cout<<"Time spent:"<<t2.stop()<<std::endl;
-			char buffer[128];
-			char buffer_right[128];
-			char buffer_left[128];
+		std::cout<< ss.doSearch(std::wstring(arr[h]),rlist)<<std::endl;
+		ss.getConcordList(rlist,clist,5,5);
+		std::cout<<"Time spent:"<<t2.stop()<<std::endl;
+		for (size_t i=0;i<clist.size();i++)
+		{
+            char buffer[1024];
+            wchar_to_utf8(clist[i].center.c_str(),clist[i].center.size(),buffer,1023, UTF8_IGNORE_ERROR|UTF8_SKIP_BOM);
+			std::cout<<buffer<<std::endl;
 			
-			for (size_t i=0;i<clist.size();i++)
-			{
-				buffer[0]='\0';
-				buffer_left[0]='\0';
-				buffer_right[0]='\0';
-				
-				wchar_to_utf8(clist[i].left.c_str(),clist[i].left.size(),buffer_left,127, UTF8_IGNORE_ERROR|UTF8_SKIP_BOM);
-				wchar_to_utf8(clist[i].right.c_str(),clist[i].right.size(),buffer_right,127, UTF8_IGNORE_ERROR|UTF8_SKIP_BOM);
-				wchar_to_utf8(clist[i].center.c_str(),clist[i].center.size(),buffer,127, UTF8_IGNORE_ERROR|UTF8_SKIP_BOM);
-				std::cout<<buffer_left<<"|"<<buffer<<"|"<<buffer_right<<std::endl;
-				
-				
-			}
-		} else {
-			std::cout<<"query failed"<<std::endl;
+			
 		}
 		h--;
-	}
-	return 0;
+    //}
+    return 0;
 }
 
